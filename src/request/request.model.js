@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const UserSchema = new mongoose.Schema({
+const RequestSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -17,10 +17,6 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    password: {
-        type: String,
-        required: true
-    },
     direction: {
         type: String,
         required: true
@@ -28,10 +24,6 @@ const UserSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: true
-    },
-    account: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Account"
     },
     workName: {
         type: String,
@@ -41,10 +33,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    role: {
+    income: {
+        type: Number,
+        required: true
+    },
+    typeAccount: {
         type: String,
-        enum: ["USER_ROLE", "ADMIN_ROLE"],
-        default: "USER_ROLE"
+        enum: ["DEBIT", "CREDIT"],
+        default: "DEBIT"
     },
     status: {
         type: Boolean,
@@ -52,4 +48,4 @@ const UserSchema = new mongoose.Schema({
     }
 });
 
-export default mongoose.model("User", UserSchema);
+export default mongoose.model("Request", RequestSchema);

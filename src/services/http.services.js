@@ -17,7 +17,7 @@ const createController = (Model) => {
     return { entity };
   });
 
-  const getAll = (req, res) => handleResponse(res, async () => {
+  const getAll = (res) => handleResponse(res, async () => {
     const entities = await Model.find();
     return { entities };
   });
@@ -34,18 +34,10 @@ const createController = (Model) => {
     return { entity };
   });
 
-  const updateUser = (req, res) => handleResponse(res, async () => {
-    const { password, ...rest } = req.body;
-    const updatedData = {
-      ...rest,
-      ...(password && { password: bcrypt.hashSync(password, 10) }),
-    };
-    const entity = await Model.findByIdAndUpdate(req.params.id, updatedData, { new: true });
-    return { entity };
-  });
-
   const remove = (req, res) => handleResponse(res, async () => {
-    const entity = await Model.findByIdAndDelete(req.params.id);
+    const id = req.body.id || req.params.id;
+    await Model.findByIdAndUpdate(id, { status: false });
+
     return { message: 'Entity deleted successfully' };
   });
 
@@ -54,8 +46,7 @@ const createController = (Model) => {
     getAll, 
     getOne, 
     update, 
-    remove,
-    updateUser
+    remove
   };
 };
 

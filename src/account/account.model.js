@@ -16,12 +16,16 @@ const AccountSchema = new mongoose.Schema({
     },
     limitTransaction: {
         type: Number,
-        required: true
+        default: 0
     },
     typeAccount: {
         type: String,
-        enum: ["debit", "credit"],
-        default: "debit"
+        enum: ["DEBIT", "CREDIT"],
+        default: "DEBIT"
+    },
+    transaction: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Transaction"
     },
     favorite: [
         {
@@ -37,7 +41,12 @@ const AccountSchema = new mongoose.Schema({
     discount: {
         type: Number,
         required: false
+    },
+    status: {
+        type: Boolean,
+        default: true
     }
+
 });
 
 export default mongoose.model("Account", AccountSchema);
