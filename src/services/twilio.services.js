@@ -9,7 +9,7 @@ export const sendConfirmationSMS = async (to, body) => {
     try {
         const message = await client.messages.create({
             body: body,
-            from: '+16185168543', 
+            from: process.env.TWILIO_PHONE_NUMBER, 
             to: to
         });
 
