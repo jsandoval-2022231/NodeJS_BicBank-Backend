@@ -1,13 +1,9 @@
-import { validationResult } from "express-validator";
+import Joi from 'joi';
 
-export const validate = (req, res, next) => {
-    var errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        console
-        return res.status(400).json({
-            msg: '-----ERROR-----',
-            errors
-        });
+export const validate = (schema) => (req, res, next) => {
+    const { error } = schema.validate(req.body);
+    if (error) {
+        return res.status(400).json({ error: error.details[0].message });
     }
     next();
-}
+};

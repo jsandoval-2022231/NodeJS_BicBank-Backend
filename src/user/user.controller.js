@@ -3,10 +3,14 @@ import Account from '../account/account.model.js'
 import RequestModel from "../request/request.model.js";
 import bcrypt from "bcryptjs";
 import { generateRandomPassword } from "../helpers/generatePassword.js";
-import { sendConfirmationSMS } from "../helpers/confirmation.js";
+import { sendConfirmationSMS } from "../services/twilio.services.js";
 import createController from "../services/http.services.js";
 
 const userController = createController(User);
+
+export const post = userController.post;
+export const get = userController.get;
+export const put = userController.put;
 
 export const acceptRequest = async (req, res) => {
     try {
@@ -24,6 +28,7 @@ export const acceptRequest = async (req, res) => {
       const accountNumber = Math.floor(100000000000 + Math.random() * 900000000000);
       const account = new Account({
         accountNumber,
+        balance: request.income,
         typeAccount: request.typeAccount,
       });
   

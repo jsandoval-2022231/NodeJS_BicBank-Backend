@@ -18,6 +18,10 @@ const AccountSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    lastTransactionReset: {
+        type: Date,
+        default: Date.now
+    },
     typeAccount: {
         type: String,
         enum: ["DEBIT", "CREDIT"],

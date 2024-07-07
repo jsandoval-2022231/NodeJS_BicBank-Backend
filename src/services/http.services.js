@@ -1,5 +1,3 @@
-import bcrypt from 'bcryptjs';
-
 const handleResponse = async (res, action) => {
   try {
     const result = await action();
@@ -9,15 +7,19 @@ const handleResponse = async (res, action) => {
   }
 };
 
-const createController = (Model) => {
+const createController = (Model, customPostLogic) => {
 
   const post = (req, res) => handleResponse(res, async () => {
-    const entity = new Model(req.body);
-    await entity.save();
-    return { entity };
+    if (customPostLogic) {
+      return customPostLogic(req, res);
+    } else {
+      const entity = new Model(req.body);
+      await entity.save();
+      return { entity };
+    }
   });
 
-  const getAll = (res) => handleResponse(res, async () => {
+  const getAll = (req, res) => handleResponse(res, async () => {
     const entities = await Model.find();
     return { entities };
   });
@@ -29,24 +31,23 @@ const createController = (Model) => {
   });
 
   const update = (req, res) => handleResponse(res, async () => {
-    const id = req.body.id || req.params.id; 
-    const entity = await Model.findByIdAndUpdate(id, req.body);
+    const id = req.body.id || req.params.id;
+    const entity = await Model.findByIdAndUpdate(id, req.body, { new: true });
     return { entity };
   });
 
   const remove = (req, res) => handleResponse(res, async () => {
     const id = req.body.id || req.params.id;
     await Model.findByIdAndUpdate(id, { status: false });
-
     return { message: 'Entity deleted successfully' };
   });
 
-  return { 
-    post, 
-    getAll, 
-    getOne, 
-    update, 
-    remove
+  return {
+    post,
+    getAll,
+    getOne,
+    update,
+    remove,
   };
 };
 

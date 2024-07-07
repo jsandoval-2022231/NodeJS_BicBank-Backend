@@ -1,4 +1,3 @@
-import { status } from "express/lib/response";
 import mongoose from "mongoose";
 
 const TransactionSchema = new mongoose.Schema({
@@ -15,11 +14,11 @@ const TransactionSchema = new mongoose.Schema({
         required: true
     },
     accountOrigin: {
-        type: Number,
+        type: String,
         required: true
     },
     accountDestination: {
-        type: Number,
+        type: String,
         required: true
     },
     status: {
