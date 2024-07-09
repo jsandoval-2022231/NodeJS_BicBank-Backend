@@ -15,6 +15,10 @@ export const processTransaction = async (accountOrigin, accountDestination, amou
         origin.lastTransactionReset = currentTime; 
     }
 
+    if (amount > 2000){
+        throw new Error('Transaction limit exceeded you can only make transactions of 2000 or less555');
+    }
+
     if ((origin.limitTransaction + amount) > 10000) {
         throw new Error('Transaction limit exceeded');
     }

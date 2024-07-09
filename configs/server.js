@@ -11,6 +11,7 @@ import AuthRoutes from '../src/auth/auth.routes.js';
 import RequestRoutes from '../src/request/request.routes.js';
 import TransactionRoutes from '../src/transaction/transaction.routes.js';
 import User from '../src/user/user.model.js';
+import AccountRoutes from '../src/account/account.routes.js';
 import bcrypt from 'bcryptjs';
 
 class Server {
@@ -22,6 +23,7 @@ class Server {
         this.authPath = '/BicBank/v1/auth'
         this.requestPath = '/BicBank/v1/request'
         this.transactionPath = '/BicBank/v1/transaction'
+        this.accountPath = '/BicBank/v1/account'
 
         this.middlewares();
         this.conectarDB();
@@ -68,6 +70,7 @@ class Server {
         this.app.use(this.authPath, AuthRoutes);
         this.app.use(this.requestPath, RequestRoutes);
         this.app.use(this.transactionPath, TransactionRoutes);
+        this.app.use(this.accountPath, AccountRoutes);
     }
 
 

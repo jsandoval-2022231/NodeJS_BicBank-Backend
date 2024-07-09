@@ -1,4 +1,4 @@
-import accountModel from "./account.model";
+import accountModel from "./account.model.js";
 import createController from "../services/http.services.js";
 
 const accountController = createController(accountModel);
@@ -10,6 +10,20 @@ export const update = accountController.update;
 export const getOne = accountController.getOne;
 
 /* Especificos */
+
+export const addAndAccountToFavorites = async (req, res) => {
+    try {
+        const { accountNumber, user } = req.body;
+        const account = await account
+            .findOne({ accountNumber: accountNumber })
+            .populate('user');
+        account.favorites.push(user);
+        await account.save();
+        return res.status(200).json({ message: 'Account added to favorites' });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+}
 
 export const getAccountByNumber = async (req, res) => {
     try {

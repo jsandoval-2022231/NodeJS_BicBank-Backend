@@ -4,61 +4,22 @@ import RequestModel from "../request/request.model.js";
 import bcrypt from "bcryptjs";
 import { generateRandomPassword } from "../helpers/generatePassword.js";
 import { sendConfirmationSMS } from "../services/twilio.services.js";
+import { processAcceptRequest  } from "../services/user.service.js"
 import createController from "../services/http.services.js";
 
-const userController = createController(User);
+export const custumLogic = async (req, res) => {
+  const { id } = req.body;
+  const request = await processAcceptRequest(id);
+  return { message: 'Request accepted successfully', request };
+} 
+
+
+const userController = createController(User, custumLogic);
 
 export const post = userController.post;
 export const get = userController.get;
 export const put = userController.put;
 
-export const acceptRequest = async (req, res) => {
-    try {
-      const request = await RequestModel.findById(req.body.id);
-      if(request.status === false ){
-        return res.status(400).json({ error: 'The request has already been answered' });
-      }
-      console.log('requestId: ', request);
-  
-      if(request.income < 100){
-        sendConfirmationSMS(`+502${request.phone}`, `Your request was rejected because the income is not enough. ${request.income}`);
-        return res.status(400).json({ error: 'The income must be greater than 100' });
-      }
-  
-      const accountNumber = Math.floor(100000000000 + Math.random() * 900000000000);
-      const account = new Account({
-        accountNumber,
-        balance: request.income,
-        typeAccount: request.typeAccount,
-      });
-  
-      await account.save();
-  
-      const showPassoword = await generateRandomPassword();
-      const password = bcrypt.hashSync(showPassoword, 10);
-  
-      const user = new User({
-        name: request.name,
-        nickname: request.nickname,
-        DPI: request.DPI,
-        email: request.email,
-        password,
-        direction: request.direction,
-        phone: request.phone,
-        workName: request.workName,
-        workDirection: request.workDirection,
-        account: account._id
-      });
-
-      await user.save();
-      await RequestModel.findByIdAndUpdate(req.body.id, { status: false });
-      sendConfirmationSMS(`+502${request.phone}`, `Your request was accepted with the following user: ${request.email} and password: ${showPassoword}`);
-      return res.status(200).json({ user });
-    }
-    catch (error) {
-      return res.status(500).json({ error: error.message });
-    }
-}
 
 export const getOwnUser = async (req, res) => {
     try {

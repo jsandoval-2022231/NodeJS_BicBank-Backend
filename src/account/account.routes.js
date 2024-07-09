@@ -13,3 +13,5 @@ router.get('/getTransactions/:accountNumber', getTransactions);
 
 router.put('/update/:id', update);
 router.delete('/remove/:id', remove);
+
+export default router;

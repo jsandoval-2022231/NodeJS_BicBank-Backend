@@ -1,9 +1,9 @@
-import User from "./user.model.js";
+import User from "../user/user.model.js";
 import Account from '../account/account.model.js';
 import RequestModel from "../request/request.model.js";
 import bcrypt from "bcryptjs";
 import { generateRandomPassword } from "../helpers/generatePassword.js";
-import { sendConfirmationSMS } from "../services/twilio.services.js";
+import { sendConfirmationSMS } from "./twilio.services.js";
 
 export const processAcceptRequest = async (requestId) => {
     const request = await RequestModel.findById(requestId);
