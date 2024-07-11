@@ -15,6 +15,7 @@ router.get('/getAccountByUser', getAccountByUser);
 router.get('/getTransactions', getTransaccionsByNoAccount);
 router.get('/:accountNumber', getTransaccionsByNoAccount);
 router.put('/update/:id', update);
+router.post('/addFavorite/:numer', addAndAccountToFavorites);
 router.get('/getAccountsByTransactionCount/:sort', getAccountsByTransactionCount);
 router.delete('/remove/:id', remove);
 

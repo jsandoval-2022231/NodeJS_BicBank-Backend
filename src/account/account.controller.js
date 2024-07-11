@@ -14,18 +14,23 @@ export const getOne = accountController.getOne;
 export const addAndAccountToFavorites = async (req, res) => {
     try { 
         const { accountNumber, DPI, alias } = req.body;
+        const numer = req.params.numer;
         const account = await AccountModel.findOne({ accountNumber: accountNumber });
         if (!account) {
             return res.status(404).json({ error: 'Account not found' });
         }
-        account.favorite.push({ accountNumber, DPI, alias });
-        await account.save();
+        const cuenta = await AccountModel.findOne({ accountNumber: numer });
+        if (!cuenta) {
+            return res.status(404).json({ error: 'ERROR' });
+        }
+        cuenta.favorite.push({ accountNumber, DPI, alias });
+        await cuenta.save();
         return res.status(200).json({ message: 'Account added to favorites' });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
-}
 
+}
 export const removeAccountFromFavorites = async (req, res) => {
     try {
         const { accountNumber, DPI } = req.body;
@@ -72,16 +77,31 @@ export const getAccountByUser = async (req, res) => {
 
 export const getTransaccionsByNoAccount = async (req, res) => {
     try {
-        const accountNumber = req.body.accountNumber;
+   
+        const { accountNumber } = req.params
         const account = await AccountModel
             .findOne({ accountNumber: accountNumber })
             .populate('transaction');
+            console.log(account)
         return res.status(200).json({ transaction: account.transaction });
     }
     catch (error) {
         return res.status(500).json({ error: error.message });
     }
 }
+
+// export const getTransaccionsByNoAccount = async (req, res) => {
+//     try {
+//         const accountNumber = req.body.accountNumber;
+//         const account = await AccountModel
+//             .findOne({ accountNumber: accountNumber })
+//             .populate('transaction');
+//         return res.status(200).json({ transaction: account.transaction });
+//     }
+//     catch (error) {
+//         return res.status(500).json({ error: error.message });
+//     }
+// }
 
 export const getAccountDetails = async (req, res) => {
     try {

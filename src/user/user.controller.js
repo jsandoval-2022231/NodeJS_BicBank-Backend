@@ -17,8 +17,8 @@ export const custumLogic = async (req, res) => {
 const userController = createController(User, custumLogic);
 
 export const post = userController.post;
-export const get = userController.get;
-export const put = userController.put;
+export const get = userController.getAll;
+export const put = userController.update
 
 
 export const getOwnUser = async (req, res) => {
