@@ -22,7 +22,8 @@ export const login = async (req, res) => {
 
     res.status(200).json({
         msg: "Login successfully",
-        token
+        token,
+        role: user.role
     });
 }
 
