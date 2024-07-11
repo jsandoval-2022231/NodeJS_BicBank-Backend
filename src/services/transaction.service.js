@@ -35,8 +35,8 @@ export const processTransaction = async (accountOrigin, accountDestination, amou
     const transaction = new Transaction({ amount, accountDestination, accountOrigin, reference });
     origin.transaction.push(transaction);
     destination.balance += amount;
-
     origin.limitTransaction += amount;
+    destination.transaction.push(transaction);
 
     await transaction.save();
     await origin.save();
@@ -44,3 +44,5 @@ export const processTransaction = async (accountOrigin, accountDestination, amou
 
     return transaction;
 };
+
+/* write below here */

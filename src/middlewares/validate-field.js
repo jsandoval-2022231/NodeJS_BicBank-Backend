@@ -1,9 +1,12 @@
 import Joi from 'joi';
 
-export const validate = (schema) => (req, res, next) => {
-    const { error } = schema.validate(req.body);
-    if (error) {
-        return res.status(400).json({ error: error.details[0].message });
-    }
-    next();
+export const validate = (schema) => {
+    return async (req, res, next) => {
+        try {
+            await schema.validateAsync(req.body, { abortEarly: false });
+            next();
+        } catch (error) {
+            res.status(400).json({ error: error.details.map(e => e.message) });
+        }
+    };
 };

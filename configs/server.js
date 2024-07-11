@@ -39,6 +39,7 @@ class Server {
             const hashedPassword = await bcrypt.hash('ADMINB', 10);
             const defaultAdmin = new User({
                 name: 'ADMINB',
+                nickname: 'ADMINB',
                 DPI: '123456789',
                 email: adminEmail,
                 password: hashedPassword,

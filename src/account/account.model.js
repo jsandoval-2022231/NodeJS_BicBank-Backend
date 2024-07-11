@@ -35,7 +35,7 @@ const AccountSchema = new mongoose.Schema({
         {
             "accountNumber": Number,
             "DPI": Number,
-            "alias": "String"
+            "alias": String
         }
     ],
     products: {

@@ -7,6 +7,11 @@ import { sendConfirmationSMS } from "./twilio.services.js";
 
 export const processAcceptRequest = async (requestId) => {
     const request = await RequestModel.findById(requestId);
+
+    const userExists = await User.findOne({ email: request.email });
+    if (userExists) {
+        throw new Error('Email already exists');
+    }
     if (request.status === false) {
         throw new Error('The request has already been answered');
     }
@@ -48,19 +53,18 @@ export const processAcceptRequest = async (requestId) => {
     return user;
 };
 
-export const getOwnUser = async (userId) => {
-    const user = await User.findById(userId);
-    return user;
-};
-
-export const updateOwnUser = async (userId, updateData) => {
-    const { _id, password, email, DPI, role, ...rest } = updateData;
-
-    if (password) {
-        const salt = bcrypt.genSaltSync(10);
-        rest.password = bcrypt.hashSync(password, salt);
+export const processRejectRequest = async (requestId) => {
+    const request = await RequestModel.findById(requestId); 
+    if (request.status === false) {
+        throw new Error('The request has already been answered');
     }
+    await Request.findByIdAndDelete(requestId);
+    sendConfirmationSMS(`+502${request.phone}`, `Your request was rejected`);
+}
 
-    await User.findByIdAndUpdate(userId, rest);
-    return { message: 'User updated successfully' };
-};
+export const verifyIfEmailExists = async (email) => {
+    const user = await User.findOne({ email });
+    if (user) {
+        throw new Error('Email already exists');
+    }
+}
