@@ -27,9 +27,9 @@ class Server {
         this.accountPath = '/BicBank/v1/account'
         this.currencyPath = '/BicBank/v1/currency'
 
-        this.middlewares();
         this.conectarDB();
         this.createDefaultAdmin();
+        this.middlewares();
         this.routes();
     }
 

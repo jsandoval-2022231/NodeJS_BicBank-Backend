@@ -45,4 +45,32 @@ export const processTransaction = async (accountOrigin, accountDestination, amou
     return transaction;
 };
 
-/* write below here */
+export const revertTransactionBefore1Minute = async (transactionId) => {
+    const transaction = await Transaction.findById(transactionId);
+    if (!transaction) {
+        throw new Error('Transaction not found');
+    }
+    const currentTime = new Date();
+    const transactionTime = new Date(transaction.createdAt);
+    const timeDifference = currentTime - transactionTime;
+    const minutesDifference = timeDifference / (1000 * 60);
+
+    if (minutesDifference > 1) {
+        throw new Error('You can only revert transactions made in the last minute');
+    }
+
+    const origin = await Account.findOne({ accountNumber: transaction.accountOrigin });
+    const destination = await Account.findOne({ accountNumber: transaction.accountDestination });
+
+    origin.balance += transaction.amount;
+    origin.transaction = origin.transaction.filter(t => t._id.toString() !== transactionId);
+    destination.balance -= transaction.amount;
+    destination.transaction = destination.transaction.filter(t => t._id.toString() !== transactionId);
+
+    await origin.save();
+    await destination.save();
+
+    await Transaction.findByIdAndDelete(transactionId);
+
+    return { message: 'Transaction reverted successfully' };
+}

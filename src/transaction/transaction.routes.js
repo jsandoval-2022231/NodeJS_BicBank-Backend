@@ -8,6 +8,7 @@ const router = Router();
 router.post('/post', validate(createTransactionSchema), post);
 router.get('/', getAll);
 router.get('/:id', getOne);
+
 //router.put('/:id', validate(updateTransactionSchema), update);
 router.delete('/:id', remove);
 

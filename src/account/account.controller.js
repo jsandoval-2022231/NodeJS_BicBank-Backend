@@ -1,4 +1,5 @@
 import AccountModel from "./account.model.js";
+import TransactionModel from "../transaction/transaction.model.js";
 import createController from "../services/http.services.js";
 
 const accountController = createController(AccountModel);
@@ -102,5 +103,40 @@ export const getAccountDetails = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 };
+
+export const getAccountsByTransactionCount = async (req, res) => {
+    console.log('getAccountsByTransactionCount'); // Verifica que la función se está ejecutando
+
+    try {
+        const { sort = 'asc' } = req.params; // Obtiene el parámetro de orden (ascendente o descendente) desde req.params
+
+        const accounts = await AccountModel.aggregate([
+            {
+                $lookup: {
+                    from: 'transactions', // Nombre de la colección de transacciones (ajusta si es diferente)
+                    localField: 'accountNumber', // Campo en AccountModel
+                    foreignField: 'accountOrigin', // Campo en TransactionModel que referencia la cuenta
+                    as: 'transactions'
+                }
+            },
+            {
+                $project: {
+                    accountNumber: 1,
+                    transactionCount: { $cond: { if: { $isArray: '$transactions' }, then: { $size: '$transactions' }, else: 0 } } // Cuenta el número de transacciones o establece en 0 si no hay transacciones
+                }
+            },
+            {
+                $sort: {
+                    transactionCount: sort === 'asc' ? 1 : -1 // Ordena según el parámetro especificado
+                }
+            }
+        ]);
+
+        return res.status(200).json({ accounts });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
 
 export default accountController;
